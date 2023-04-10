@@ -1,7 +1,14 @@
 # Deno New Bing
+
 New Bing API for Deno
 
+## TODO
+
+- [ ] Remove extra code copied from original repo
+- [ ] Jailbreak by default
+
 ## Example
+
 ```ts
 import { BingWebBot } from "./mod.ts";
 
@@ -16,4 +23,5 @@ bot.sendMessage({
 ```
 
 ## Credits
+
 Most code is copied from [chathub](https://github.com/chathub-dev/chathub/tree/main/src/app/bots/bing).
