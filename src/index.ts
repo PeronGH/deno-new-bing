@@ -76,20 +76,20 @@ export class BingWebBot extends AbstractBot {
 
     const conversation = this.conversationContext!;
 
-    const wsp = new WebSocketWithUtils("wss://sydney.bing.com/sydney/ChatHub");
+    const wsu = new WebSocketWithUtils("wss://sydney.bing.com/sydney/ChatHub");
 
-    wsp.addUnpackedMessageListener((events) => {
+    wsu.addUnpackedMessageListener((events) => {
       for (const event of events) {
         if (JSON.stringify(event) === "{}") {
-          wsp.sendPacked({ type: 6 });
-          wsp.sendPacked(this.buildChatRequest(conversation, params.prompt));
+          wsu.sendPacked({ type: 6 });
+          wsu.sendPacked(this.buildChatRequest(conversation, params.prompt));
           conversation.invocationId += 1;
         } else if (event.type === 6) {
-          wsp.sendPacked({ type: 6 });
+          wsu.sendPacked({ type: 6 });
         } else if (event.type === 3) {
           params.onEvent({ type: "DONE" });
-          wsp.removeAllListeners();
-          wsp.close();
+          wsu.removeAllListeners();
+          wsu.close();
         } else if (event.type === 1) {
           if (event.arguments[0].messages) {
             const text = convertMessageToMarkdown(
@@ -111,21 +111,29 @@ export class BingWebBot extends AbstractBot {
               ),
             });
           }
+        } else if (event.type === 7) {
+          params.onEvent({
+            type: "ERROR",
+            error: new ChatError(
+              event.error || "Connection closed with an error.",
+              ErrorCode.UNKNOWN_ERROR,
+            ),
+          });
         }
       }
     });
 
-    wsp.addEventListener("close", () => {
+    wsu.addEventListener("close", () => {
       params.onEvent({ type: "DONE" });
     });
 
     params.signal?.addEventListener("abort", () => {
-      wsp.removeAllListeners();
-      wsp.close();
+      wsu.removeAllListeners();
+      wsu.close();
     });
 
-    await wsp.open();
-    wsp.sendPacked({ protocol: "json", version: 1 });
+    await wsu.open();
+    wsu.sendPacked({ protocol: "json", version: 1 });
   }
 
   resetConversation() {
