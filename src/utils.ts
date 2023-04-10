@@ -16,24 +16,10 @@ export function convertMessageToMarkdown(message: ChatResponseMessage): string {
 
 const RecordSeparator = String.fromCharCode(30);
 
-const websocketUtils = {
-  // deno-lint-ignore no-explicit-any
-  packMessage(data: any) {
-    return `${JSON.stringify(data)}${RecordSeparator}`;
-  },
-  unpackMessage(data: string | ArrayBuffer | Blob) {
-    return data
-      .toString()
-      .split(RecordSeparator)
-      .filter(Boolean)
-      .map((s) => JSON.parse(s));
-  },
-};
-
 export class WebSocketWithUtils extends WebSocket {
   // deno-lint-ignore no-explicit-any
   sendPacked(data: any) {
-    this.send(websocketUtils.packMessage(data));
+    this.send(`${JSON.stringify(data)}${RecordSeparator}`);
   }
 
   addUnpackedMessageListener(
@@ -41,7 +27,12 @@ export class WebSocketWithUtils extends WebSocket {
     listener: (data: any[]) => void,
   ) {
     this.addEventListener("message", (event) => {
-      listener(websocketUtils.unpackMessage(event.data));
+      listener(
+        (event.data.toString() as string)
+          .split(RecordSeparator)
+          .filter(Boolean)
+          .map((s) => JSON.parse(s)),
+      );
     });
   }
 
