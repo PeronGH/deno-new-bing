@@ -33,7 +33,7 @@ export abstract class AbstractBot {
         // ignore user abort exception
         params.onEvent({
           type: "ERROR",
-          error: new ChatError((err as Error).message, ErrorCode.UNKOWN_ERROR),
+          error: new ChatError((err as Error).message, ErrorCode.UNKNOWN_ERROR),
         });
       }
     }
