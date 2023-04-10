@@ -4,8 +4,9 @@ New Bing API for Deno
 
 ## TODO
 
-- [ ] Remove extra code copied from original repo
 - [ ] Jailbreak by default
+- [ ] Remove extra code copied from original repo
+- [ ] Make it more configurable
 
 ## Example
 
