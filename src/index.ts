@@ -46,7 +46,7 @@ export class BingWebBot extends AbstractBot {
             author: "user",
             inputMethod: "Keyboard",
             text: message,
-            messageType: "Chat",
+            messageType: "SearchQuery",
           },
           conversationId: conversation.conversationId,
           conversationSignature: conversation.conversationSignature,
@@ -80,6 +80,7 @@ export class BingWebBot extends AbstractBot {
 
     wsu.addUnpackedMessageListener((events) => {
       for (const event of events) {
+        typeMatching:
         if (JSON.stringify(event) === "{}") {
           wsu.sendPacked({ type: 6 });
           wsu.sendPacked(this.buildChatRequest(conversation, params.prompt));
@@ -98,6 +99,18 @@ export class BingWebBot extends AbstractBot {
             params.onEvent({ type: "UPDATE_ANSWER", data: { text } });
           }
         } else if (event.type === 2) {
+          const success = event.item.result.value === "Success";
+          if (!success) {
+            params.onEvent({
+              type: "ERROR",
+              error: new ChatError(
+                `${event.item.result.value}: ${event.item.result.message}`,
+                ErrorCode.NOT_SUCCESS,
+              ),
+            });
+            break typeMatching;
+          }
+
           const messages = event.item.messages as ChatResponseMessage[];
           const limited = messages.some((message) =>
             message.contentOrigin === "TurnLimiter"

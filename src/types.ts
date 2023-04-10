@@ -41,6 +41,7 @@ export enum ErrorCode {
   BING_FORBIDDEN = "BING_FORBIDDEN",
   API_KEY_NOT_SET = "API_KEY_NOT_SET",
   BARD_EMPTY_RESPONSE = "BARD_EMPTY_RESPONSE",
+  NOT_SUCCESS = "NOT_SUCCESS",
 }
 
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts
