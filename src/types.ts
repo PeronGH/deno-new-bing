@@ -79,6 +79,7 @@ export type BingGeneratorResult = {
   error: unknown;
 } | {
   type: AskBingEventType.RESET;
+  text: string;
 };
 
 export enum AskBingEventType {
