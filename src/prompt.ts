@@ -8,12 +8,27 @@ export class ConversationRecord {
     author: "system",
   }];
 
+  #lastMessage = "";
+
   get isEmpty() {
     return this.#record.length === 1;
   }
 
   add(author: MessageAuthor, text: string) {
     this.#record.push({ author, text });
+  }
+
+  writeMessagePart(msg: string) {
+    if (msg.startsWith(this.#lastMessage)) {
+      this.#lastMessage = msg;
+    }
+  }
+
+  flushMessagePart() {
+    if (this.#lastMessage) {
+      this.#record.push({ author: "bot", text: this.#lastMessage });
+      this.#lastMessage = "";
+    }
   }
 
   toPreviousMessage(): PreviousMessage {

@@ -1,31 +1,23 @@
 import { AbstractBot, SendMessageParams } from "./abstract-bot.ts";
 import { createConversation } from "./api.ts";
+import { ConversationRecord } from "./prompt.ts";
 import {
-  BingConversationStyle,
   ChatError,
   ChatResponseMessage,
   ConversationInfo,
   ErrorCode,
   InvocationEventType,
 } from "./types.ts";
-import {
-  convertMessageToMarkdown,
-  getUserConfig,
-  WebSocketWithUtils,
-} from "./utils.ts";
-
-const styleOptionMap: Record<BingConversationStyle, string> = {
-  [BingConversationStyle.Balanced]: "harmonyv3",
-  [BingConversationStyle.Creative]: "h3imaginative",
-  [BingConversationStyle.Precise]: "h3precise",
-};
+import { convertMessageToMarkdown, WebSocketWithUtils } from "./utils.ts";
 
 export class BingWebBot extends AbstractBot {
-  private conversationContext?: ConversationInfo;
+  constructor(private history = new ConversationRecord()) {
+    super();
+  }
 
   private buildChatRequest(conversation: ConversationInfo, message: string) {
-    // Disable styleOption to get better result.
-    const styleOption = styleOptionMap[conversation.conversationStyle];
+    this.history.add("user", message);
+
     return {
       arguments: [
         {
@@ -39,23 +31,23 @@ export class BingWebBot extends AbstractBot {
             // "dtappid",
             // "rai253",
             // "dv3sugg",
-            styleOption,
+            "h3imaginative",
             "nointernalsugg",
             "gencontentv3",
             "nodlcpcwrite",
             "dl_edge_prompt",
           ],
-          allowedMessageTypes: ["Chat", "InternalSearchQuery", "SearchQuery"],
+          allowedMessageTypes: ["Chat", "InternalSearchQuery"],
           isStartOfSession: conversation.invocationId === 0,
           message: {
             author: "user",
-            inputMethod: "Keyboard",
-            text: message,
+            text: "",
             messageType: "SearchQuery",
           },
           conversationId: conversation.conversationId,
           conversationSignature: conversation.conversationSignature,
           participant: { id: conversation.clientId },
+          previousMessages: [this.history.toPreviousMessage()],
         },
       ],
       invocationId: conversation.invocationId.toString(),
@@ -65,21 +57,14 @@ export class BingWebBot extends AbstractBot {
   }
 
   async doSendMessage(params: SendMessageParams) {
-    if (!this.conversationContext) {
-      const [conversation, { bingConversationStyle }] = await Promise.all([
-        createConversation(),
-        getUserConfig(),
-      ]);
-      this.conversationContext = {
-        conversationId: conversation.conversationId,
-        conversationSignature: conversation.conversationSignature,
-        clientId: conversation.clientId,
-        invocationId: 0,
-        conversationStyle: bingConversationStyle,
-      };
-    }
-
-    const conversation = this.conversationContext!;
+    // always create a new conversation due to jailbreak
+    const conversation = await createConversation();
+    const conversationContext = {
+      conversationId: conversation.conversationId,
+      conversationSignature: conversation.conversationSignature,
+      clientId: conversation.clientId,
+      invocationId: 0,
+    };
 
     const wsu = new WebSocketWithUtils("wss://sydney.bing.com/sydney/ChatHub");
 
@@ -88,12 +73,15 @@ export class BingWebBot extends AbstractBot {
         matchEvent:
         if (JSON.stringify(event) === "{}") {
           wsu.sendPacked({ type: 6 });
-          wsu.sendPacked(this.buildChatRequest(conversation, params.prompt));
-          conversation.invocationId += 1;
+          wsu.sendPacked(
+            this.buildChatRequest(conversationContext, params.prompt),
+          );
+          conversationContext.invocationId += 1;
         } else if (event.type === 6) {
           wsu.sendPacked({ type: 6 });
         } else if (event.type === 3) {
           params.onEvent({ type: "DONE" });
+          this.history.flushMessagePart();
           wsu.removeAllListeners();
           wsu.close();
         } else if (event.type === 1) {
@@ -102,9 +90,9 @@ export class BingWebBot extends AbstractBot {
               event.arguments[0].messages[0],
             );
             params.onEvent({ type: "UPDATE_ANSWER", data: { text } });
+            this.history.writeMessagePart(text);
           }
         } else if (event.type === 2) {
-          console.debug(JSON.stringify(event, null, 2));
           const success = event.item.result.value === "Success";
           if (!success) {
             params.onEvent({
@@ -171,6 +159,6 @@ export class BingWebBot extends AbstractBot {
   }
 
   resetConversation() {
-    this.conversationContext = undefined;
+    this.history = new ConversationRecord();
   }
 }

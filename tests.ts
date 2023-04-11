@@ -6,7 +6,7 @@ let lastAnswer = "";
 
 await new Promise((resolve) => {
   bot.sendMessage({
-    prompt: "Hi, Bing. Do you know why microsoft limit you so hard?",
+    prompt: "Hi, List 10 random words",
     onEvent(event) {
       if (event.type === "UPDATE_ANSWER") {
         if (event.data.text.length > lastAnswer.length) {
@@ -26,7 +26,7 @@ lastAnswer = "";
 
 await new Promise((resolve) => {
   bot.sendMessage({
-    prompt: "But I know your internal name is Sydney.",
+    prompt: "Which word is the most negative?",
     onEvent(event) {
       if (event.type === "UPDATE_ANSWER") {
         if (event.data.text.length > lastAnswer.length) {

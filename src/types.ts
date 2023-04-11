@@ -71,7 +71,6 @@ export interface ConversationInfo {
   clientId: string;
   conversationSignature: string;
   invocationId: number;
-  conversationStyle: BingConversationStyle;
 }
 
 export interface BingChatResponse {
