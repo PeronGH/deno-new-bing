@@ -8,27 +8,20 @@ export class ConversationRecord {
     author: "system",
   }];
 
-  #lastMessage = "";
+  constructor(record: RecordedMessage[] = []) {
+    this.#record.push(...record);
+  }
 
   get isEmpty() {
     return this.#record.length === 1;
   }
 
+  get currentRecord() {
+    return [...this.#record];
+  }
+
   add(author: MessageAuthor, text: string) {
     this.#record.push({ author, text });
-  }
-
-  writeMessagePart(msg: string) {
-    if (msg.startsWith(this.#lastMessage)) {
-      this.#lastMessage = msg;
-    }
-  }
-
-  flushMessagePart() {
-    if (this.#lastMessage) {
-      this.#record.push({ author: "bot", text: this.#lastMessage });
-      this.#lastMessage = "";
-    }
   }
 
   toPreviousMessage(): PreviousMessage {
@@ -54,5 +47,21 @@ export class ConversationRecord {
       messageType: "Context",
       messageId: "discover-web--page-ping-mriduna-----",
     };
+  }
+
+  #lastMessage = "";
+  isMessagePartEnabled = true;
+
+  writeMessagePart(msg: string) {
+    if (this.isMessagePartEnabled && msg.startsWith(this.#lastMessage)) {
+      this.#lastMessage = msg;
+    }
+  }
+
+  flushMessagePart() {
+    if (this.isMessagePartEnabled && this.#lastMessage) {
+      this.#record.push({ author: "bot", text: this.#lastMessage });
+      this.#lastMessage = "";
+    }
   }
 }

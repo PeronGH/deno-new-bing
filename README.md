@@ -12,16 +12,13 @@ New Bing API for Deno
 ## Example
 
 ```ts
-import { BingWebBot } from "./mod.ts";
+import { askBing } from "./mod.ts";
 
-const bot = new BingWebBot();
-
-bot.sendMessage({
-  prompt: "Hi, who are you?",
-  onEvent(event) {
-    console.log(event);
-  },
+const result = await askBing("Hello, who are you?", (token) => {
+  console.log(token);
 });
+
+console.log(result);
 ```
 
 ## Credits
