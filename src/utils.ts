@@ -1,4 +1,4 @@
-import { BingConversationStyle, ChatResponseMessage } from "./types.ts";
+import { ChatResponseMessage } from "./types.ts";
 
 export function convertMessageToMarkdown(message: ChatResponseMessage): string {
   if (message.messageType === "InternalSearchQuery") {
@@ -49,8 +49,3 @@ export class WebSocketWithUtils extends WebSocket {
     });
   }
 }
-
-// TODO: make this configurable
-export const getUserConfig = () => ({
-  bingConversationStyle: BingConversationStyle.Creative,
-});

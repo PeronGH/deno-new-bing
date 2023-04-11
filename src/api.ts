@@ -1,5 +1,6 @@
 import { random } from "https://esm.sh/lodash-es@4.17.21";
 import { ChatError, ConversationResponse, ErrorCode } from "./types.ts";
+import { bingConfig } from "./config.ts";
 
 // https://github.com/acheong08/EdgeGPT/blob/master/src/EdgeGPT.py#L32
 function randomIP() {
@@ -13,7 +14,7 @@ export async function createConversation(): Promise<ConversationResponse> {
     "x-ms-client-request-id": crypto.randomUUID(),
     "x-ms-useragent":
       "azsdk-js-api-client-factory/1.0.0-beta.1 core-rest-pipeline/1.10.0 OS/Win32",
-    "cookie": Deno.env.get("BING_COOKIE")!,
+    "cookie": bingConfig.cookie,
   };
 
   let resp: ConversationResponse;

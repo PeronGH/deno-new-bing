@@ -5,18 +5,19 @@ New Bing API for Deno
 ## TODO
 
 - [X] Jailbreak by default
-- [ ] Server API support
+- [X] Server API support
 - [ ] Remove extra code copied from original repo
-- [ ] Make it more configurable
+- [X] Make it more configurable
 
 ## Example
 
 ```ts
 import { askBing } from "./mod.ts";
 
-const result = await askBing("Hello, who are you?", (token) => {
-  console.log(token);
-});
+const result = await askBing(
+  "Hello, who are you?",
+  (token) => Deno.stdout.writeSync(new TextEncoder().encode(token)),
+);
 
 console.log(result);
 ```

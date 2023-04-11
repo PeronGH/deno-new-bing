@@ -64,6 +64,10 @@ export type RecordedMessage = {
   text: string;
 };
 
+export type BingConfig = {
+  cookie: string;
+};
+
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts
 
 export interface ConversationInfo {
