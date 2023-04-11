@@ -40,7 +40,7 @@ export class BingWebBot extends AbstractBot {
             "nodlcpcwrite",
             "dl_edge_prompt",
           ],
-          allowedMessageTypes: ["Chat", "InternalSearchQuery"],
+          allowedMessageTypes: ["Chat"],
           isStartOfSession: conversation.invocationId === 0,
           message: {
             author: "user",
