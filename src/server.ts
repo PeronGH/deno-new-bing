@@ -10,6 +10,7 @@ import { wait } from "./utils.ts";
 export async function* askBingGenerator(
   userMessage: string,
   history: RecordedMessage[] = [],
+  signal?: AbortSignal,
 ): AsyncGenerator<BingGeneratorResult> {
   const bot = new BingWebBot(new ConversationRecord(history));
 
@@ -38,6 +39,7 @@ export async function* askBingGenerator(
         }
       }
     },
+    signal,
   });
 
   let text = "";
