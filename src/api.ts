@@ -18,23 +18,12 @@ export async function createConversation(
     cookie,
   };
 
-  let resp: ConversationResponse;
-  try {
-    resp = await fetch(API_ENDPOINT, { headers, redirect: "error" }).then(
-      (res) => res.json(),
-    );
-    if (!resp.result) {
-      throw new Error("Invalid response");
-    }
-  } catch (err) {
-    console.error("retry bing create", err);
-    resp = await fetch(API_ENDPOINT, {
-      headers: { ...headers, "x-forwarded-for": randomIP() },
-      redirect: "error",
-    }).then((res) => res.json());
-    if (!resp) {
-      throw new Error(`Failed to fetch (${API_ENDPOINT})`);
-    }
+  const resp: ConversationResponse = await fetch(API_ENDPOINT, {
+    headers: { ...headers, "x-forwarded-for": randomIP() },
+    redirect: "error",
+  }).then((res) => res.json());
+  if (!resp) {
+    throw new Error(`Failed to fetch (${API_ENDPOINT})`);
   }
 
   if (resp.result.value !== "Success") {
