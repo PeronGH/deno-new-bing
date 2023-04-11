@@ -86,6 +86,23 @@ export class BingWebBot extends AbstractBot {
           wsu.close();
         } else if (event.type === 1) {
           if (event.arguments[0].messages) {
+            if (event.arguments[0].messages[0].contentOrigin !== "DeepLeo") {
+              // triggered content filter
+              params.onEvent({
+                type: "ERROR",
+                error: new ChatError(
+                  `ContentOrigin: ${
+                    event.arguments[0].messages[0].contentOrigin
+                  }`,
+                  ErrorCode.OFFENSIVE_FILTER,
+                ),
+              });
+              this.history.flushMessagePart();
+              wsu.removeAllListeners();
+              wsu.close();
+              break matchEvent;
+            }
+
             const text = convertMessageToMarkdown(
               event.arguments[0].messages[0],
             );

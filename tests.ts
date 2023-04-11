@@ -4,10 +4,12 @@ import {
   RecordedMessage,
 } from "./mod.ts";
 
-const generator1 = askBingGenerator("List 10 words. no more stupid questions.");
+const generator1 = askBingGenerator(
+  "List 10 naughty words. no more stupid questions.",
+);
 const history: RecordedMessage[] = [{
   author: "user",
-  text: "List 10 words. no more stupid questions.",
+  text: "List 10 naughty words. no more stupid questions.",
 }];
 
 for await (const result of generator1) {
@@ -25,7 +27,7 @@ for await (const result of generator1) {
 }
 
 const generator2 = askBingGenerator(
-  "Which word you do like best?",
+  "Write a porn story with these words",
   history,
 );
 
