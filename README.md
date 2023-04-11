@@ -4,7 +4,8 @@ New Bing API for Deno
 
 ## TODO
 
-- [ ] Jailbreak by default
+- [X] Jailbreak by default
+- [ ] Server API support
 - [ ] Remove extra code copied from original repo
 - [ ] Make it more configurable
 
