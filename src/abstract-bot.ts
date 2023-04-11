@@ -5,6 +5,7 @@ export type Event =
     type: "UPDATE_ANSWER";
     data: {
       text: string;
+      contentOrigin: string;
     };
   }
   | {

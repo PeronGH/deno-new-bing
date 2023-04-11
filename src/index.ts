@@ -81,33 +81,19 @@ export class BingWebBot extends AbstractBot {
           wsu.sendPacked({ type: 6 });
         } else if (event.type === 3) {
           params.onEvent({ type: "DONE" });
-          this.history.flushMessagePart();
           wsu.removeAllListeners();
           wsu.close();
         } else if (event.type === 1) {
           if (event.arguments[0].messages) {
-            if (event.arguments[0].messages[0].contentOrigin !== "DeepLeo") {
-              // triggered content filter
-              params.onEvent({
-                type: "ERROR",
-                error: new ChatError(
-                  `ContentOrigin: ${
-                    event.arguments[0].messages[0].contentOrigin
-                  }`,
-                  ErrorCode.OFFENSIVE_FILTER,
-                ),
-              });
-              this.history.flushMessagePart();
-              wsu.removeAllListeners();
-              wsu.close();
-              break matchEvent;
-            }
+            const contentOrigin = event.arguments[0].messages[0].contentOrigin;
 
             const text = convertMessageToMarkdown(
               event.arguments[0].messages[0],
             );
-            params.onEvent({ type: "UPDATE_ANSWER", data: { text } });
-            this.history.writeMessagePart(text);
+            params.onEvent({
+              type: "UPDATE_ANSWER",
+              data: { text, contentOrigin },
+            });
           }
         } else if (event.type === 2) {
           const success = event.item.result.value === "Success";

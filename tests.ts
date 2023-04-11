@@ -1,8 +1,4 @@
-import {
-  askBingGenerator,
-  BingGeneratorResultType,
-  RecordedMessage,
-} from "./mod.ts";
+import { AskBingEventType, askBingGenerator, RecordedMessage } from "./mod.ts";
 
 const generator1 = askBingGenerator(
   "List 10 naughty words. no more stupid questions.",
@@ -14,15 +10,18 @@ const history: RecordedMessage[] = [{
 
 for await (const result of generator1) {
   switch (result.type) {
-    case BingGeneratorResultType.DONE:
+    case AskBingEventType.DONE:
       history.push({ author: "bot", text: result.text });
       break;
-    case BingGeneratorResultType.TOKEN:
-      Deno.stdout.write(new TextEncoder().encode(result.token));
+    case AskBingEventType.NEW_ANSWER:
+      console.clear();
+      console.log(result.answer);
       break;
-    case BingGeneratorResultType.ERROR:
+    case AskBingEventType.ERROR:
       console.log(result.error);
       break;
+    case AskBingEventType.RESET:
+      console.log("[Reset]");
   }
 }
 
@@ -33,14 +32,17 @@ const generator2 = askBingGenerator(
 
 for await (const result of generator2) {
   switch (result.type) {
-    case BingGeneratorResultType.DONE:
+    case AskBingEventType.DONE:
       history.push({ author: "bot", text: result.text });
       break;
-    case BingGeneratorResultType.TOKEN:
-      Deno.stdout.write(new TextEncoder().encode(result.token));
+    case AskBingEventType.NEW_ANSWER:
+      console.clear();
+      console.log(result.answer);
       break;
-    case BingGeneratorResultType.ERROR:
+    case AskBingEventType.ERROR:
       console.log(result.error);
       break;
+    case AskBingEventType.RESET:
+      console.log("[Reset]");
   }
 }

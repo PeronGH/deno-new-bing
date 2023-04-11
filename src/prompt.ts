@@ -48,20 +48,4 @@ export class ConversationRecord {
       messageId: "discover-web--page-ping-mriduna-----",
     };
   }
-
-  #lastMessage = "";
-  isMessagePartEnabled = true;
-
-  writeMessagePart(msg: string) {
-    if (this.isMessagePartEnabled && msg.startsWith(this.#lastMessage)) {
-      this.#lastMessage = msg;
-    }
-  }
-
-  flushMessagePart() {
-    if (this.isMessagePartEnabled && this.#lastMessage) {
-      this.#record.push({ author: "bot", text: this.#lastMessage });
-      this.#lastMessage = "";
-    }
-  }
 }
