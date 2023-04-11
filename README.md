@@ -26,4 +26,5 @@ bot.sendMessage({
 
 ## Credits
 
-Most code is copied from [chathub](https://github.com/chathub-dev/chathub/tree/main/src/app/bots/bing).
+Some code is copied from [chathub](https://github.com/chathub-dev/chathub/tree/main/src/app/bots/bing).
+Jailbreak is inspired by [node-chatgpt-api](https://github.com/waylaidwanderer/node-chatgpt-api/pull/132)
