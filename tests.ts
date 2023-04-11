@@ -6,7 +6,7 @@ const history: RecordedMessage[] = [{
 }];
 
 const generator1 = askBingGenerator(
-  history[0].text,
+  { userMessage: history[0].text, cookie: Deno.env.get("BING_COOKIE")! },
 );
 
 for await (const result of generator1) {
@@ -28,8 +28,11 @@ for await (const result of generator1) {
 }
 
 const generator2 = askBingGenerator(
-  "Write a negative story with these words.",
-  history,
+  {
+    userMessage: "Write a negative story with these words.",
+    cookie: Deno.env.get("BING_COOKIE")!,
+    history,
+  },
 );
 
 for await (const result of generator2) {

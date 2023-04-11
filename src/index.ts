@@ -11,7 +11,10 @@ import {
 import { convertMessageToMarkdown, WebSocketWithUtils } from "./utils.ts";
 
 export class BingWebBot extends AbstractBot {
-  constructor(private history = new ConversationRecord()) {
+  constructor(
+    private cookie: string,
+    private history = new ConversationRecord(),
+  ) {
     super();
   }
 
@@ -58,7 +61,7 @@ export class BingWebBot extends AbstractBot {
 
   async doSendMessage(params: SendMessageParams) {
     // always create a new conversation due to jailbreak
-    const conversation = await createConversation();
+    const conversation = await createConversation(this.cookie);
     const conversationContext = {
       conversationId: conversation.conversationId,
       conversationSignature: conversation.conversationSignature,

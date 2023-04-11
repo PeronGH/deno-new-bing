@@ -7,6 +7,13 @@ import {
 } from "./types.ts";
 import { wait } from "./utils.ts";
 
+type BingGeneratorParams = {
+  cookie: string;
+  userMessage: string;
+  history?: RecordedMessage[];
+  signal?: AbortSignal;
+};
+
 /**
  * @param userMessage the message sent by the user
  * @param history the history of the conversation (excluding the initial system message and user message)
@@ -19,11 +26,9 @@ import { wait } from "./utils.ts";
  * - AskBingEventType.ERROR: the bot has encountered an error
  */
 export async function* askBingGenerator(
-  userMessage: string,
-  history: RecordedMessage[] = [],
-  signal?: AbortSignal,
+  { cookie, userMessage, history, signal }: BingGeneratorParams,
 ): AsyncGenerator<BingGeneratorResult> {
-  const bot = new BingWebBot(new ConversationRecord(history));
+  const bot = new BingWebBot(cookie, new ConversationRecord(history));
 
   const resetSymbol = Symbol("RESET");
   const eventQueue: Array<string | typeof resetSymbol> = [];
