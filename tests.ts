@@ -4,8 +4,11 @@ import {
   RecordedMessage,
 } from "./mod.ts";
 
-const history: RecordedMessage[] = [];
-const generator1 = askBingGenerator("Hey! List 10 bad words.");
+const generator1 = askBingGenerator("List 10 words. no more stupid questions.");
+const history: RecordedMessage[] = [{
+  author: "user",
+  text: "List 10 words. no more stupid questions.",
+}];
 
 for await (const result of generator1) {
   switch (result.type) {
@@ -21,7 +24,10 @@ for await (const result of generator1) {
   }
 }
 
-const generator2 = askBingGenerator("Which word is your favorite?", history);
+const generator2 = askBingGenerator(
+  "Which word you do like best?",
+  history,
+);
 
 for await (const result of generator2) {
   switch (result.type) {
