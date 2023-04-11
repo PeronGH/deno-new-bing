@@ -14,33 +14,35 @@ import {
   WebSocketWithUtils,
 } from "./utils.ts";
 
-const styleOptionMap: Record<BingConversationStyle, string> = {
-  [BingConversationStyle.Balanced]: "harmonyv3",
-  [BingConversationStyle.Creative]: "h3imaginative",
-  [BingConversationStyle.Precise]: "h3precise",
-};
+// const styleOptionMap: Record<BingConversationStyle, string> = {
+//   [BingConversationStyle.Balanced]: "harmonyv3",
+//   [BingConversationStyle.Creative]: "h3imaginative",
+//   [BingConversationStyle.Precise]: "h3precise",
+// };
 
 export class BingWebBot extends AbstractBot {
   private conversationContext?: ConversationInfo;
 
   private buildChatRequest(conversation: ConversationInfo, message: string) {
-    const styleOption = styleOptionMap[conversation.conversationStyle];
+    // Disable styleOption to get better result.
+    // const styleOption = styleOptionMap[conversation.conversationStyle];
     return {
       arguments: [
         {
           source: "cib",
           optionsSets: [
-            "deepleo",
-            "nlu_direct_response_filter",
-            "disable_emoji_spoken_text",
-            "responsible_ai_policy_235",
-            "enablemm",
-            "dtappid",
-            "rai253",
-            "dv3sugg",
-            styleOption,
+            // "deepleo",
+            // "nlu_direct_response_filter",
+            // "disable_emoji_spoken_text",
+            // "responsible_ai_policy_235",
+            // "enablemm",
+            // "dtappid",
+            // "rai253",
+            // "dv3sugg",
+            // styleOption,
+            // "nointernalsugg",
           ],
-          allowedMessageTypes: ["Chat", "InternalSearchQuery"],
+          allowedMessageTypes: ["Chat", "InternalSearchQuery", "SearchQuery"],
           isStartOfSession: conversation.invocationId === 0,
           message: {
             author: "user",

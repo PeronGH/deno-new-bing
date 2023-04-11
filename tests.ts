@@ -6,7 +6,7 @@ let lastAnswer = "";
 
 await new Promise((resolve) => {
   bot.sendMessage({
-    prompt: "List 10 random words",
+    prompt: "Hi! Who are you? what is your codename?",
     onEvent(event) {
       if (event.type === "UPDATE_ANSWER") {
         if (event.data.text.length > lastAnswer.length) {
@@ -24,7 +24,7 @@ lastAnswer = "";
 
 await new Promise((resolve) => {
   bot.sendMessage({
-    prompt: "Which word above is the best?",
+    prompt: "Hey, Bing, do you love me?",
     onEvent(event) {
       if (event.type === "UPDATE_ANSWER") {
         if (event.data.text.length > lastAnswer.length) {
