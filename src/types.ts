@@ -83,10 +83,10 @@ export type BingGeneratorResult = {
 };
 
 export enum AskBingEventType {
-  DONE,
-  NEW_ANSWER,
-  ERROR,
-  RESET,
+  DONE = "DONE",
+  NEW_ANSWER = "NEW_ANSWER",
+  ERROR = "ERROR",
+  RESET = "RESET",
 }
 
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts
