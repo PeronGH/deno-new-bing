@@ -42,6 +42,7 @@ export enum ErrorCode {
   API_KEY_NOT_SET = "API_KEY_NOT_SET",
   BARD_EMPTY_RESPONSE = "BARD_EMPTY_RESPONSE",
   NOT_SUCCESS = "NOT_SUCCESS",
+  OFFENSIVE_FILTER = "OFFENSIVE_FILTER",
 }
 
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts

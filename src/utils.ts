@@ -52,5 +52,5 @@ export class WebSocketWithUtils extends WebSocket {
 
 // TODO: make this configurable
 export const getUserConfig = () => ({
-  bingConversationStyle: BingConversationStyle.Balanced,
+  bingConversationStyle: BingConversationStyle.Creative,
 });

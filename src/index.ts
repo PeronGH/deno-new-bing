@@ -14,33 +14,36 @@ import {
   WebSocketWithUtils,
 } from "./utils.ts";
 
-// const styleOptionMap: Record<BingConversationStyle, string> = {
-//   [BingConversationStyle.Balanced]: "harmonyv3",
-//   [BingConversationStyle.Creative]: "h3imaginative",
-//   [BingConversationStyle.Precise]: "h3precise",
-// };
+const styleOptionMap: Record<BingConversationStyle, string> = {
+  [BingConversationStyle.Balanced]: "harmonyv3",
+  [BingConversationStyle.Creative]: "h3imaginative",
+  [BingConversationStyle.Precise]: "h3precise",
+};
 
 export class BingWebBot extends AbstractBot {
   private conversationContext?: ConversationInfo;
 
   private buildChatRequest(conversation: ConversationInfo, message: string) {
     // Disable styleOption to get better result.
-    // const styleOption = styleOptionMap[conversation.conversationStyle];
+    const styleOption = styleOptionMap[conversation.conversationStyle];
     return {
       arguments: [
         {
           source: "cib",
           optionsSets: [
-            // "deepleo",
+            "deepleo",
             // "nlu_direct_response_filter",
-            // "disable_emoji_spoken_text",
+            "disable_emoji_spoken_text",
             // "responsible_ai_policy_235",
-            // "enablemm",
+            "enablemm",
             // "dtappid",
             // "rai253",
             // "dv3sugg",
-            // styleOption,
-            // "nointernalsugg",
+            styleOption,
+            "nointernalsugg",
+            "gencontentv3",
+            "nodlcpcwrite",
+            "dl_edge_prompt",
           ],
           allowedMessageTypes: ["Chat", "InternalSearchQuery", "SearchQuery"],
           isStartOfSession: conversation.invocationId === 0,
@@ -82,7 +85,7 @@ export class BingWebBot extends AbstractBot {
 
     wsu.addUnpackedMessageListener((events) => {
       for (const event of events) {
-        typeMatching:
+        matchEvent:
         if (JSON.stringify(event) === "{}") {
           wsu.sendPacked({ type: 6 });
           wsu.sendPacked(this.buildChatRequest(conversation, params.prompt));
@@ -101,6 +104,7 @@ export class BingWebBot extends AbstractBot {
             params.onEvent({ type: "UPDATE_ANSWER", data: { text } });
           }
         } else if (event.type === 2) {
+          console.debug(JSON.stringify(event, null, 2));
           const success = event.item.result.value === "Success";
           if (!success) {
             params.onEvent({
@@ -110,7 +114,7 @@ export class BingWebBot extends AbstractBot {
                 ErrorCode.NOT_SUCCESS,
               ),
             });
-            break typeMatching;
+            break matchEvent;
           }
 
           const messages = event.item.messages as ChatResponseMessage[];
@@ -125,6 +129,21 @@ export class BingWebBot extends AbstractBot {
                 ErrorCode.CONVERSATION_LIMIT,
               ),
             });
+            break matchEvent;
+          }
+
+          const offense = messages.some((message) =>
+            message.offense !== "None"
+          );
+          if (offense) {
+            params.onEvent({
+              type: "ERROR",
+              error: new ChatError(
+                "Sorry, someone has said something offensive in this conversation.",
+                ErrorCode.OFFENSIVE_FILTER,
+              ),
+            });
+            break matchEvent;
           }
         } else if (event.type === 7) {
           params.onEvent({
