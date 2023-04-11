@@ -68,6 +68,23 @@ export type BingConfig = {
   cookie: string;
 };
 
+export type BingGeneratorResult = {
+  type: BingGeneratorResultType.DONE;
+  text: string;
+} | {
+  type: BingGeneratorResultType.TOKEN;
+  token: string;
+} | {
+  type: BingGeneratorResultType.ERROR;
+  error: unknown;
+};
+
+export enum BingGeneratorResultType {
+  DONE,
+  TOKEN,
+  ERROR,
+}
+
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts
 
 export interface ConversationInfo {

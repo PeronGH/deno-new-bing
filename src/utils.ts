@@ -49,3 +49,6 @@ export class WebSocketWithUtils extends WebSocket {
     });
   }
 }
+
+export const wait = (ms: number | undefined = undefined) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
