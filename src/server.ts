@@ -7,6 +7,17 @@ import {
 } from "./types.ts";
 import { wait } from "./utils.ts";
 
+/**
+ * @param userMessage the message sent by the user
+ * @param history the history of the conversation (excluding the initial system message and user message)
+ * @param signal the signal to abort the conversation
+ *
+ * @returns an async generator that yields the following events:
+ * - AskBingEventType.RESET: the bot has reset the answer
+ * - AskBingEventType.NEW_ANSWER: the bot has a new answer
+ * - AskBingEventType.DONE: the bot has finished answering the question
+ * - AskBingEventType.ERROR: the bot has encountered an error
+ */
 export async function* askBingGenerator(
   userMessage: string,
   history: RecordedMessage[] = [],
