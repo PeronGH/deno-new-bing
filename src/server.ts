@@ -29,7 +29,7 @@ export async function* askBingGenerator(
   const eventQueue: Array<string | typeof resetSymbol> = [];
   let isDone = false;
 
-  bot.sendMessage({
+  const session = bot.sendMessage({
     prompt: userMessage,
     onEvent: (event) => {
       switch (event.type) {
@@ -70,6 +70,7 @@ export async function* askBingGenerator(
   }
 
   try {
+    await session;
     yield { type: AskBingEventType.DONE, text };
   } catch (error) {
     yield { type: AskBingEventType.ERROR, error };
