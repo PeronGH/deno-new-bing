@@ -4,6 +4,10 @@ export class ChatError extends Error {
     super(message);
     this.code = code;
   }
+
+  override toString() {
+    return `${this.code}: ${this.message}`;
+  }
 }
 
 export interface ConversationResponse {
@@ -44,6 +48,21 @@ export enum ErrorCode {
   NOT_SUCCESS = "NOT_SUCCESS",
   OFFENSIVE_FILTER = "OFFENSIVE_FILTER",
 }
+
+export type PreviousMessage = {
+  author: "user";
+  description: string;
+  contextType: "WebPage";
+  messageType: "Context";
+  messageId: "discover-web--page-ping-mriduna-----";
+};
+
+export type MessageAuthor = "user" | "bot" | "system" | "context";
+
+export type RecordedMessage = {
+  author: MessageAuthor;
+  text: string;
+};
 
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts
 
