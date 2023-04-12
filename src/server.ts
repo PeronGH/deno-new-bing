@@ -70,10 +70,13 @@ export async function* askBingGenerator(
         if (/^Searching the web for: `(.+?)`$/.test(event)) {
           yield { type: AskBingEventType.QUERY, query: event };
         } else {
-          yield {
-            type: AskBingEventType.ANSWER,
-            answer: event.slice(text.length),
-          };
+          const answer = event.slice(text.length);
+          if (answer) {
+            yield {
+              type: AskBingEventType.ANSWER,
+              answer,
+            };
+          }
           text = event;
         }
       }
