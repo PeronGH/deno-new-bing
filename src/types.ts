@@ -72,7 +72,7 @@ export type BingGeneratorResult = {
   type: AskBingEventType.DONE;
   text: string;
 } | {
-  type: AskBingEventType.NEW_ANSWER;
+  type: AskBingEventType.ANSWER;
   answer: string;
 } | {
   type: AskBingEventType.ERROR;
@@ -80,13 +80,17 @@ export type BingGeneratorResult = {
 } | {
   type: AskBingEventType.RESET;
   text: string;
+} | {
+  type: AskBingEventType.QUERY;
+  query: string;
 };
 
 export enum AskBingEventType {
   DONE = "DONE",
-  NEW_ANSWER = "NEW_ANSWER",
+  ANSWER = "ANSWER",
   ERROR = "ERROR",
   RESET = "RESET",
+  QUERY = "QUERY",
 }
 
 // https://github.com/bytemate/bingchat-api/blob/main/src/lib.ts

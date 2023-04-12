@@ -40,7 +40,7 @@ export class BingWebBot extends AbstractBot {
             "nodlcpcwrite",
             "dl_edge_prompt",
           ],
-          allowedMessageTypes: ["Chat"],
+          allowedMessageTypes: ["Chat", "InternalSearchQuery"],
           isStartOfSession: conversation.invocationId === 0,
           message: {
             author: "user",
@@ -73,7 +73,7 @@ export class BingWebBot extends AbstractBot {
 
     wsu.addUnpackedMessageListener((events) => {
       for (const event of events) {
-        matchEvent:
+        handleCurrentEvent:
         if (JSON.stringify(event) === "{}") {
           wsu.sendPacked({ type: 6 });
           wsu.sendPacked(
@@ -108,7 +108,7 @@ export class BingWebBot extends AbstractBot {
                 ErrorCode.NOT_SUCCESS,
               ),
             });
-            break matchEvent;
+            break handleCurrentEvent;
           }
 
           const messages = event.item.messages as ChatResponseMessage[];
@@ -123,7 +123,7 @@ export class BingWebBot extends AbstractBot {
                 ErrorCode.CONVERSATION_LIMIT,
               ),
             });
-            break matchEvent;
+            break handleCurrentEvent;
           }
 
           const offense = messages.some((message) =>
@@ -137,7 +137,7 @@ export class BingWebBot extends AbstractBot {
                 ErrorCode.OFFENSIVE_FILTER,
               ),
             });
-            break matchEvent;
+            break handleCurrentEvent;
           }
         } else if (event.type === 7) {
           params.onEvent({

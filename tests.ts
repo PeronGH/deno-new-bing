@@ -15,7 +15,7 @@ for await (const result of generator1) {
       history.push({ author: "bot", text: result.text });
       console.log(result.text);
       break;
-    case AskBingEventType.NEW_ANSWER:
+    case AskBingEventType.ANSWER:
       console.log("[New Answer]", result.answer.length);
       break;
     case AskBingEventType.ERROR:
@@ -41,7 +41,7 @@ for await (const result of generator2) {
       history.push({ author: "bot", text: result.text });
       console.log(result.text);
       break;
-    case AskBingEventType.NEW_ANSWER:
+    case AskBingEventType.ANSWER:
       console.log("[New Answer]", result.answer.length);
       break;
     case AskBingEventType.ERROR:
