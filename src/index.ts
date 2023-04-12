@@ -61,10 +61,10 @@ export class BingWebBot extends AbstractBot {
 
   async doSendMessage(params: SendMessageParams) {
     // always create a new conversation due to jailbreak
-    const conversation = await createConversation(this.cookie)
-      .catch(() => null);
-
-    if (!conversation) {
+    let conversation;
+    try {
+      conversation = await createConversation(this.cookie);
+    } catch {
       params.onEvent({
         type: "ERROR",
         error: new ChatError(
