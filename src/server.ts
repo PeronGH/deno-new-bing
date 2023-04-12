@@ -51,7 +51,7 @@ export async function* askBingGenerator(
         }
         case "ERROR": {
           isDone = true;
-          console.log("[CAUGHT ERROR]", event.error);
+          console.error("[CAUGHT ERROR]", event.error);
         }
       }
     },
