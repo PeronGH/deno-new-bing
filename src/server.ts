@@ -65,9 +65,17 @@ export async function* askBingGenerator(
       const event = eventQueue.shift()!;
       if (event === resetSymbol) {
         yield { type: AskBingEventType.RESET, text };
+        text = "";
       } else {
-        yield { type: AskBingEventType.ANSWER, answer: event };
-        text = event;
+        if (/^Searching the web for: `(.+?)`$/.test(event)) {
+          yield { type: AskBingEventType.QUERY, query: event };
+        } else {
+          yield {
+            type: AskBingEventType.ANSWER,
+            answer: event.slice(text.length),
+          };
+          text = event;
+        }
       }
     } else {
       await wait();

@@ -2,7 +2,7 @@ import { AskBingEventType, askBingGenerator, RecordedMessage } from "./mod.ts";
 
 const history: RecordedMessage[] = [{
   author: "user",
-  text: "List 10 random words.",
+  text: "Tell me what is Deno",
 }];
 
 const generator1 = askBingGenerator(
@@ -16,7 +16,7 @@ for await (const result of generator1) {
       console.log(result.text);
       break;
     case AskBingEventType.ANSWER:
-      console.log("[New Answer]", result.answer.length);
+      Deno.stdout.writeSync(new TextEncoder().encode(result.answer));
       break;
     case AskBingEventType.ERROR:
       console.log(result.error);
@@ -24,12 +24,15 @@ for await (const result of generator1) {
     case AskBingEventType.RESET:
       console.log(result.text);
       console.log("[Reset]");
+      break;
+    case AskBingEventType.QUERY:
+      console.log(result.query);
   }
 }
 
 const generator2 = askBingGenerator(
   {
-    userMessage: "Write a negative story with these words.",
+    userMessage: "How is it compared to Node.js",
     cookie: Deno.env.get("BING_COOKIE")!,
     history,
   },
@@ -50,5 +53,8 @@ for await (const result of generator2) {
     case AskBingEventType.RESET:
       console.log(result.text);
       console.log("[Reset]");
+      break;
+    case AskBingEventType.QUERY:
+      console.log(result.query);
   }
 }
