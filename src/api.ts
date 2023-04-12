@@ -18,10 +18,10 @@ export async function createConversation(
     cookie,
   };
 
-  const resp: ConversationResponse = await fetch(API_ENDPOINT, {
+  const resp: ConversationResponse | null = await fetch(API_ENDPOINT, {
     headers: { ...headers, "x-forwarded-for": randomIP() },
     redirect: "error",
-  }).then((res) => res.json());
+  }).then((res) => res.json()).catch(() => null);
   if (!resp) {
     throw new Error(`Failed to fetch (${API_ENDPOINT})`);
   }
