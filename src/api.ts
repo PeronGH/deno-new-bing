@@ -18,23 +18,28 @@ export async function createConversation(
     cookie,
   };
 
-  const resp: ConversationResponse | null = await fetch(API_ENDPOINT, {
+  const resp = await fetch(API_ENDPOINT, {
     headers: { ...headers, "x-forwarded-for": randomIP() },
     redirect: "error",
-  }).then((res) => res.json()).catch(() => null);
-  if (!resp) {
+  });
+
+  let resJSON: ConversationResponse;
+  try {
+    resJSON = await resp.json();
+  } catch {
+    console.error("[FAILED FETCH]", resp);
     throw new Error(`Failed to fetch (${API_ENDPOINT})`);
   }
 
-  if (resp.result.value !== "Success") {
-    const message = `${resp.result.value}: ${resp.result.message}`;
-    if (resp.result.value === "UnauthorizedRequest") {
+  if (resJSON.result.value !== "Success") {
+    const message = `${resJSON.result.value}: ${resJSON.result.message}`;
+    if (resJSON.result.value === "UnauthorizedRequest") {
       throw new ChatError(message, ErrorCode.BING_UNAUTHORIZED);
     }
-    if (resp.result.value === "Forbidden") {
+    if (resJSON.result.value === "Forbidden") {
       throw new ChatError(message, ErrorCode.BING_FORBIDDEN);
     }
     throw new Error(message);
   }
-  return resp;
+  return resJSON;
 }
