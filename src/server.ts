@@ -66,7 +66,7 @@ export async function* askBingGenerator(
       if (event === resetSymbol) {
         yield { type: AskBingEventType.RESET, text };
       } else {
-        yield { type: AskBingEventType.NEW_ANSWER, answer: event };
+        yield { type: AskBingEventType.ANSWER, answer: event };
         text = event;
       }
     } else {
