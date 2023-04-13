@@ -1,10 +1,7 @@
+import { Event } from "./abstract-bot.ts";
 import { BingWebBot } from "./index.ts";
 import { ConversationRecord } from "./prompt.ts";
-import {
-  AskBingEventType,
-  BingGeneratorResult,
-  RecordedMessage,
-} from "./types.ts";
+import { BingEventType, BingGeneratorEvent, RecordedMessage } from "./types.ts";
 import { wait } from "./utils.ts";
 
 type BingGeneratorParams = {
@@ -27,68 +24,57 @@ type BingGeneratorParams = {
  */
 export async function* askBingGenerator(
   { cookie, userMessage, history, signal }: BingGeneratorParams,
-): AsyncGenerator<BingGeneratorResult> {
+): AsyncGenerator<BingGeneratorEvent> {
   const bot = new BingWebBot(cookie, new ConversationRecord(history));
 
-  const resetSymbol = Symbol("RESET");
-  const eventQueue: Array<string | typeof resetSymbol> = [];
-  let isDone = false;
+  const eventQueue: Event[] = [];
 
   const session = bot.sendMessage({
     prompt: userMessage,
-    onEvent: (event) => {
-      switch (event.type) {
-        case "UPDATE_ANSWER": {
-          if (event.data.contentOrigin !== "DeepLeo") {
-            eventQueue.push(resetSymbol);
-          }
-          eventQueue.push(event.data.text);
-          break;
-        }
-        case "DONE": {
-          isDone = true;
-          break;
-        }
-        case "ERROR": {
-          isDone = true;
-          console.error("[CAUGHT ERROR]", event.error);
-        }
-      }
-    },
+    onEvent: (event) => eventQueue.push(event),
     signal,
   });
 
+  let isDone = false;
   let text = "";
 
   while (!isDone) {
     if (eventQueue.length) {
       const event = eventQueue.shift()!;
-      if (event === resetSymbol) {
-        yield { type: AskBingEventType.RESET, text };
-        text = "";
-      } else {
-        if (/^Searching the web for: `(.+?)`$/.test(event)) {
-          yield { type: AskBingEventType.QUERY, query: event };
-        } else {
-          const answer = event.slice(text.length);
-          if (answer) {
-            yield {
-              type: AskBingEventType.ANSWER,
-              answer,
-            };
+      switch (event.type) {
+        case "UPDATE_ANSWER": {
+          if (event.data.contentOrigin !== "DeepLeo") {
+            yield { type: BingEventType.RESET, text };
+            text = "";
+            break;
           }
-          text = event;
+          const answer = event.data.text.slice(text.length);
+          if (!answer) break;
+          yield { type: BingEventType.ANSWER, answer };
+          text = event.data.text;
+          break;
+        }
+        case "DONE": {
+          yield { type: BingEventType.DONE, text };
+          isDone = true;
+          break;
+        }
+        case "ERROR": {
+          yield { type: BingEventType.ERROR, error: event.error };
+          break;
+        }
+        case "QUERY": {
+          yield { type: BingEventType.QUERY, query: event.query };
+          break;
         }
       }
-    } else {
-      await wait();
-    }
+    } else await wait();
   }
 
   try {
     await session;
-    yield { type: AskBingEventType.DONE, text };
+    yield { type: BingEventType.DONE, text };
   } catch (error) {
-    yield { type: AskBingEventType.ERROR, error };
+    yield { type: BingEventType.ERROR, error };
   }
 }

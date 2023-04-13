@@ -68,24 +68,24 @@ export type BingConfig = {
   cookie: string;
 };
 
-export type BingGeneratorResult = {
-  type: AskBingEventType.DONE;
+export type BingGeneratorEvent = {
+  type: BingEventType.DONE;
   text: string;
 } | {
-  type: AskBingEventType.ANSWER;
+  type: BingEventType.ANSWER;
   answer: string;
 } | {
-  type: AskBingEventType.ERROR;
+  type: BingEventType.ERROR;
   error: unknown;
 } | {
-  type: AskBingEventType.RESET;
+  type: BingEventType.RESET;
   text: string;
 } | {
-  type: AskBingEventType.QUERY;
+  type: BingEventType.QUERY;
   query: string;
 };
 
-export enum AskBingEventType {
+export enum BingEventType {
   DONE = "DONE",
   ANSWER = "ANSWER",
   ERROR = "ERROR",

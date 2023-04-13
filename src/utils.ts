@@ -1,17 +1,19 @@
 import { ChatResponseMessage } from "./types.ts";
 
-export function convertMessageToMarkdown(message: ChatResponseMessage): string {
+export function convertMessageToMarkdown(
+  message: ChatResponseMessage,
+): { text: string; isQuery: boolean } {
   if (message.messageType === "InternalSearchQuery") {
-    return message.text;
+    return { isQuery: true, text: message.text };
   }
   for (const card of message.adaptiveCards) {
     for (const block of card.body) {
       if (block.type === "TextBlock") {
-        return block.text;
+        return { isQuery: false, text: block.text };
       }
     }
   }
-  return "";
+  return { isQuery: false, text: "" };
 }
 
 const RecordSeparator = String.fromCharCode(30);

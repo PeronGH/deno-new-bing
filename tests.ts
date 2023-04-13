@@ -1,4 +1,4 @@
-import { AskBingEventType, askBingGenerator, RecordedMessage } from "./mod.ts";
+import { askBingGenerator, BingEventType, RecordedMessage } from "./mod.ts";
 
 const history: RecordedMessage[] = [{
   author: "user",
@@ -11,21 +11,21 @@ const generator1 = askBingGenerator(
 
 for await (const result of generator1) {
   switch (result.type) {
-    case AskBingEventType.DONE:
+    case BingEventType.DONE:
       history.push({ author: "bot", text: result.text });
       console.log(result.text);
       break;
-    case AskBingEventType.ANSWER:
+    case BingEventType.ANSWER:
       Deno.stdout.writeSync(new TextEncoder().encode(result.answer));
       break;
-    case AskBingEventType.ERROR:
+    case BingEventType.ERROR:
       console.log(result.error);
       break;
-    case AskBingEventType.RESET:
+    case BingEventType.RESET:
       console.log(result.text);
       console.log("[Reset]");
       break;
-    case AskBingEventType.QUERY:
+    case BingEventType.QUERY:
       console.log(result.query);
   }
 }
@@ -40,21 +40,21 @@ const generator2 = askBingGenerator(
 
 for await (const result of generator2) {
   switch (result.type) {
-    case AskBingEventType.DONE:
+    case BingEventType.DONE:
       history.push({ author: "bot", text: result.text });
       console.log(result.text);
       break;
-    case AskBingEventType.ANSWER:
+    case BingEventType.ANSWER:
       console.log("[New Answer]", result.answer.length);
       break;
-    case AskBingEventType.ERROR:
+    case BingEventType.ERROR:
       console.log(result.error);
       break;
-    case AskBingEventType.RESET:
+    case BingEventType.RESET:
       console.log(result.text);
       console.log("[Reset]");
       break;
-    case AskBingEventType.QUERY:
+    case BingEventType.QUERY:
       console.log(result.query);
   }
 }

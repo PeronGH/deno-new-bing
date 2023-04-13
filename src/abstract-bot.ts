@@ -14,6 +14,10 @@ export type Event =
   | {
     type: "ERROR";
     error: ChatError;
+  }
+  | {
+    type: "QUERY";
+    query: string;
   };
 
 export interface SendMessageParams {

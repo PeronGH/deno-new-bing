@@ -103,13 +103,23 @@ export class BingWebBot extends AbstractBot {
           if (event.arguments[0].messages) {
             const contentOrigin = event.arguments[0].messages[0].contentOrigin;
 
-            const text = convertMessageToMarkdown(
+            const { text, isQuery } = convertMessageToMarkdown(
               event.arguments[0].messages[0],
             );
-            params.onEvent({
-              type: "UPDATE_ANSWER",
-              data: { text, contentOrigin },
-            });
+
+            if (text) {
+              if (isQuery) {
+                params.onEvent({
+                  type: "QUERY",
+                  query: text,
+                });
+              } else {
+                params.onEvent({
+                  type: "UPDATE_ANSWER",
+                  data: { text, contentOrigin },
+                });
+              }
+            }
           }
         } else if (event.type === 2) {
           const success = event.item.result.value === "Success";
