@@ -34,7 +34,7 @@ export class BingWebBot extends AbstractBot {
             // "dtappid",
             // "rai253",
             // "dv3sugg",
-            // "h3imaginative",
+            "h3imaginative",
             "nointernalsugg",
             // "gencontentv3",
             // "nodlcpcwrite",
