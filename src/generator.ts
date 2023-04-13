@@ -60,7 +60,8 @@ export async function* askBingGenerator(
           break;
         }
         case "ERROR": {
-          yield { type: BingEventType.ERROR, error: event.error };
+          const error = `${event.error.code}: ${event.error.message}`;
+          yield { type: BingEventType.ERROR, error };
           break;
         }
         case "QUERY": {
@@ -75,6 +76,9 @@ export async function* askBingGenerator(
     await session;
     yield { type: BingEventType.DONE, text };
   } catch (error) {
-    yield { type: BingEventType.ERROR, error };
+    yield {
+      type: BingEventType.ERROR,
+      error: error instanceof Error ? error.message : error,
+    };
   }
 }

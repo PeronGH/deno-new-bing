@@ -76,7 +76,7 @@ export type BingGeneratorEvent = {
   answer: string;
 } | {
   type: BingEventType.ERROR;
-  error: unknown;
+  error: string;
 } | {
   type: BingEventType.RESET;
   text: string;
