@@ -78,7 +78,7 @@ export async function* askBingGenerator(
   } catch (error) {
     yield {
       type: BingEventType.ERROR,
-      error: error instanceof Error ? error.message : error,
+      error: error instanceof Error ? error.message : error.toString(),
     };
   }
 }
