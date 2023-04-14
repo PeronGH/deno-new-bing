@@ -31,7 +31,6 @@ export abstract class AbstractBot {
     try {
       await this.doSendMessage(params);
     } catch (err) {
-      console.error(err);
       if (err instanceof ChatError) {
         params.onEvent({ type: "ERROR", error: err });
       } else if (!params.signal?.aborted) {

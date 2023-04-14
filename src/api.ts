@@ -28,7 +28,6 @@ export async function createConversation(
   try {
     resJSON = await resp.json();
   } catch {
-    console.error("[FAILED FETCH]", resp);
     throw new Error(`Failed to fetch (${API_ENDPOINT})`);
   }
 
