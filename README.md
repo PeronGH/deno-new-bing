@@ -12,7 +12,13 @@ New Bing API for Deno
 ## Example
 
 ```sh
-BING_COOKIE="Your cookie here..." deno run --allow-net --allow-env tests.ts
+BING_COOKIE="Your cookie here..." deno run --allow-net --allow-env demo.ts
+```
+
+or
+
+```sh
+deno run -A cli.ts
 ```
 
 ## Credits
