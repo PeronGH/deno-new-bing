@@ -45,7 +45,7 @@ export class BingWebBot extends AbstractBot {
           message: {
             author: "user",
             text: "",
-            messageType: "SearchQuery",
+            messageType: "Chat",
           },
           conversationId: conversation.conversationId,
           conversationSignature: conversation.conversationSignature,
