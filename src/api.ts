@@ -1,4 +1,4 @@
-import { random } from "https://esm.sh/lodash-es@4.17.21";
+import { random } from "./utils.ts";
 import { ChatError, ConversationResponse, ErrorCode } from "./types.ts";
 
 // https://github.com/acheong08/EdgeGPT/blob/master/src/EdgeGPT.py#L32

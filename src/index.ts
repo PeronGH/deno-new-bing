@@ -1,3 +1,4 @@
+import { random } from "./utils.ts";
 import { AbstractBot, SendMessageParams } from "./abstract-bot.ts";
 import { createConversation } from "./api.ts";
 import { ConversationRecord } from "./prompt.ts";
@@ -45,7 +46,7 @@ export class BingWebBot extends AbstractBot {
           message: {
             author: "user",
             text: "",
-            messageType: "Chat",
+            messageType: random() ? "Chat" : "SearchQuery",
           },
           conversationId: conversation.conversationId,
           conversationSignature: conversation.conversationSignature,

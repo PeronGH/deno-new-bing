@@ -1,4 +1,5 @@
 import { ChatResponseMessage } from "./types.ts";
+export { random } from "https://esm.sh/lodash-es@4.17.21";
 
 export function convertMessageToMarkdown(
   message: ChatResponseMessage,
