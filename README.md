@@ -21,6 +21,10 @@ or
 deno run -A cli.ts
 ```
 
+## Server
+
+`server.ts` includes a HTTP server that converts WebSocket to SSE and simplifies relevant API.
+
 ## Credits
 
 Some code is copied from [chathub](https://github.com/chathub-dev/chathub/tree/main/src/app/bots/bing).
